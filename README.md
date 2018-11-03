@@ -1,19 +1,20 @@
 # lovro_os
 Simple operating system in C++
 
-## How to build:
-Automatically:  
+## Prerequisites
+Install the following programs:  
+
+```
+sudo apt-get install virtualbox
+sudo apt-get install grub-legacy-ec2 
+sudo apt-get install xorriso 
+```
+
+## How to build
 
 ```
 ./CompileAndLink.sh
-```
-or manually:  
-
-```
-mkdir build  
-cd build
-cmake ..
-make
+./GenerateIso.sh
 ```
 
 ## Useful links
