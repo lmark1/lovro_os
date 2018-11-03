@@ -8,6 +8,9 @@ OUTPUT_ARCH(i386:i386)
 
 SECTIONS
 {
+    /*
+        Starting address of the linker.
+    */
     . = 0x0100000;
     
     /*
@@ -22,6 +25,8 @@ SECTIONS
     
     /*
         Initialized variables and constructor initialization list.
+        start_ctors - pointer to the start of the constructor list
+        end_ctor - pointer to the end of the constructor list.
     */
     .data :
     {
@@ -43,7 +48,7 @@ SECTIONS
     }
     
     /*
-        Comments can be removed,
+        Comments can be discarded at the end of the object file.
     */
     /DISCARD/ :
     {

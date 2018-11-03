@@ -12,8 +12,9 @@
 # Define a new section called .text
 .section .text
 
-# Expect an outside function "kernelMain"
+# Expect an outside function "kernelMain" and "callConstructors"
 .extern kernelMain
+.extern callConstructors
 
 # Global makes symbol "loader" visible to linker
 .global loader
@@ -24,11 +25,13 @@
 
 # When the bootloader decides this is a kernel...
 # It stores information in RAM - "multiboot structure"
+# First call constructors
 # AX register - pointer to the multiboot structure
 # BX register - contains magic number
 # Pass that information to kernel main by pushing it on stack
 loader:
     mov $kernel_stack, %esp
+    call callConstructors
     push %eax
     push %ebx
     call kernelMain

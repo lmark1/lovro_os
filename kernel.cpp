@@ -13,7 +13,35 @@ void printf(char* str)
 		VideMemory[i] = (VideMemory[i] & 0xFF00) | str[i];
 }
 
-/*
+/**
+ * (*constructor)() - function pointer, returns void, no arguments
+ */
+typedef void (*constructor)();
+
+/**
+ * Start of the constructor functions. Address defined in linker.ld.
+ */
+extern "C" constructor start_ctors;
+
+/**
+ * End of the constructor functions. Address defined in linker.ld.
+ */
+extern "C" constructor end_ctors;
+
+/**
+ * Iterates between addresses start_ctors and end_ctors and calls
+ * all constructors.
+ */
+extern "C" void callConstructors()
+{
+	for(constructor* i = &start_ctors; i != &end_ctors; i++)
+	{
+		// Dereference the constructor and call it.
+		(*i)();
+	}
+}
+
+/**
  * Extern "C" : Do not change the name of the function when compiling it.
  */
 extern "C" void kernelMain(void* multiboot_structure, unsigned int magic_number)
