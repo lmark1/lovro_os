@@ -13,7 +13,6 @@ sudo apt-get install xorriso
 ## How to build
 
 ```
-./CompileAndLink.sh
 ./GenerateIso.sh
 ```
 

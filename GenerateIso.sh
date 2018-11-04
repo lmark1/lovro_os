@@ -1,2 +1,10 @@
-grub-mkrescue --output=build/kernel.iso iso
+rm -rf build
 rm -rf iso
+mkdir build
+cd build
+cmake ..
+make VERBOSE=${VERBOSE}
+make install
+cd ..
+rm -rf iso
+

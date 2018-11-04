@@ -32,7 +32,7 @@ add_executable(kernel.bin
 # Make ISO file directory tree
 SET(GRUB_DIRECTORY "${CMAKE_SOURCE_DIR}/iso/boot/grub") 
 SET(BOOT_DIRECTORY "${CMAKE_SOURCE_DIR}/iso/boot")
-SET(GRUB_CONFIG "grub.cfg")
+SET(GRUB_CONFIG_FILE "grub.cfg")
 file(MAKE_DIRECTORY "${GRUB_DIRECTORY}")
 
 # Copy kernel.bin file to boot directory
@@ -41,16 +41,21 @@ install(
     DESTINATION "${BOOT_DIRECTORY}")
 
 # Initialize grub.cfg
-file(WRITE "build/${GRUB_CONFIG}" "set timeout=0\n")
-file(APPEND "build/${GRUB_CONFIG}" "set default=0\n\n")
-file(APPEND "build/${GRUB_CONFIG}" "menuentry \"My Operating System\" {\n")
-file(APPEND "build/${GRUB_CONFIG}" "  multiboot /boot/kernel.bin\n")
-file(APPEND "build/${GRUB_CONFIG}" "  boot\n")
-file(APPEND "build/${GRUB_CONFIG}" "}")
+file(WRITE "${GRUB_CONFIG_FILE}" "set timeout=0\n")
+file(APPEND "${GRUB_CONFIG_FILE}" "set default=0\n\n")
+file(APPEND "${GRUB_CONFIG_FILE}" "menuentry \"My Operating System\" {\n")
+file(APPEND "${GRUB_CONFIG_FILE}" "  multiboot /boot/kernel.bin\n")
+file(APPEND "${GRUB_CONFIG_FILE}" "  boot\n")
+file(APPEND "${GRUB_CONFIG_FILE}" "}")
 
 # Copy grub.cfg file to grub directory
 install(
-    FILES "build/${GRUB_CONFIG}"
+    FILES "${GRUB_CONFIG_FILE}"
     DESTINATION "${GRUB_DIRECTORY}") 
-    
-# TODO: Figure out how to invoke grub-rescue from here
+
+# Execute grub-mkrescue
+install(
+    CODE 
+    "execute_process(COMMAND grub-mkrescue 
+        --output=${CMAKE_SOURCE_DIR}/build/kernel.iso 
+        ${CMAKE_SOURCE_DIR}/iso)")
