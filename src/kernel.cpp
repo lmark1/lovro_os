@@ -1,3 +1,4 @@
+#include "types.h"
 
 /**
  * My print function, outputs the chars on the screen.
