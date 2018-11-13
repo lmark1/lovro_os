@@ -28,8 +28,9 @@ target_compile_options(loader PRIVATE "${ASM_COMPILE_FLAGS}")
 # Generate a STATIC object file kernel.o
 add_library(kernel OBJECT ${SRC_DIR}/kernel.cpp)
 
-# Generate a STATIC object file gdt.o
+# Other libraries
 add_library(gdt OBJECT ${SRC_DIR}/GlobalDescTable.cpp)
+add_library(port OBJECT ${SRC_DIR}/Port.cpp)
 
 # Set a different linker - append appropriate flags to exe linker
 set(CMAKE_EXE_LINKER_FLAGS 
@@ -39,7 +40,8 @@ set(CMAKE_EXE_LINKER_FLAGS
 add_executable(kernel.bin 
     $<TARGET_OBJECTS:loader> 
     $<TARGET_OBJECTS:kernel>
-    $<TARGET_OBJECTS:gdt>)
+    $<TARGET_OBJECTS:gdt>
+    $<TARGET_OBJECTS:port>)
     
 # Make ISO file directory tree
 SET(GRUB_DIRECTORY "${CMAKE_SOURCE_DIR}/iso/boot/grub") 
