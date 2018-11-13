@@ -31,6 +31,7 @@ add_library(kernel OBJECT ${SRC_DIR}/kernel.cpp)
 # Other libraries
 add_library(gdt OBJECT ${SRC_DIR}/GlobalDescTable.cpp)
 add_library(port OBJECT ${SRC_DIR}/Port.cpp)
+add_library(interrupt OBJECT ${SRC_DIR}/Interrupts.cpp)
 
 # Set a different linker - append appropriate flags to exe linker
 set(CMAKE_EXE_LINKER_FLAGS 
@@ -41,7 +42,8 @@ add_executable(kernel.bin
     $<TARGET_OBJECTS:loader> 
     $<TARGET_OBJECTS:kernel>
     $<TARGET_OBJECTS:gdt>
-    $<TARGET_OBJECTS:port>)
+    $<TARGET_OBJECTS:port>
+    $<TARGET_OBJECTS:interrupt>)
     
 # Make ISO file directory tree
 SET(GRUB_DIRECTORY "${CMAKE_SOURCE_DIR}/iso/boot/grub") 
