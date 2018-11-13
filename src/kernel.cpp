@@ -1,4 +1,5 @@
 #include "types.h"
+#include "GlobalDescTable.h"
 
 /**
  * My print function, outputs the chars on the screen.
@@ -48,5 +49,9 @@ extern "C" void callConstructors()
 extern "C" void kernelMain(void* multiboot_structure, unsigned int magic_number)
 {
 	printf("Hello world!");
+
+	// Instantiate gdt
+	GlobalDescriptorTable gdt;
+
 	while(1);
 }

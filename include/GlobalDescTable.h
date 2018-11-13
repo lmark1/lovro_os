@@ -28,12 +28,12 @@ public:
 	{
 
 	private:
-		uint16_t limit_low;			// Lower 16 bits of the limit
-		uint16_t base_low;			// Lower 16 bits of the base
-		uint8_t base_middle;		// Middle 8 bits of the base
-		uint8_t access_flags;		// Various access flags
-		uint8_t limit_high_flags;	// 4 flags for limit, 4 bits for flags
-		uint8_t base_high;			// Final 8 bits of the base
+		uint16_t _limit_low;			// Lower 16 bits of the limit
+		uint16_t _base_low;				// Lower 16 bits of the base
+		uint8_t _base_middle;			// Middle 8 bits of the base
+		uint8_t _access_flags;			// Various access flags
+		uint8_t _limit_high_flags;		// 4 bits for flags, 4 bits for limit
+		uint8_t _base_high;				// Final 8 bits of the base
 
 	public:
 		SegmentDescriptor(uint32_t base, uint32_t limit, uint8_t access_flags);
@@ -42,6 +42,25 @@ public:
 
 	}__attribute__((packed));
 	// Preserve the structure and order of variables
+
+	SegmentDescriptor nullSegmentSelector;
+	SegmentDescriptor unusedSegmentSelector;
+	SegmentDescriptor dataSegmentSelector;
+	SegmentDescriptor codeSegmentSelector;
+
+public:
+	GlobalDescriptorTable();
+	~GlobalDescriptorTable();
+
+	/**
+	 * Return Code Segment Selector offset wrt. gdt.
+	 */
+	uint16_t getCodeSegmentSelectorOff();
+
+	/**
+	 * Return Data Segment Selector offset wrt. gdt.
+	 */
+	uint16_t getDataSegmentSelectorOff();
 };
 
 #endif /* INCLUDE_GLOBALDESCTABLE_H_ */
