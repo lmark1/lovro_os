@@ -1,5 +1,6 @@
 #include "types.h"
 #include "GlobalDescTable.h"
+#include "InterruptManager.h"
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
@@ -93,6 +94,8 @@ extern "C" void kernelMain(void* multiboot_structure, unsigned int magic_number)
 
 	// Instantiate gdt
 	GlobalDescriptorTable gdt;
+	InterruptManager iManager(&gdt);
+	iManager.Activate();
 
 	while(1);
 }

@@ -25,13 +25,16 @@ include_directories("${INCLUDE_DIR}")
 add_library(loader OBJECT ${SRC_DIR}/loader.s)
 target_compile_options(loader PRIVATE "${ASM_COMPILE_FLAGS}")
 
+add_library(interrupts OBJECT ${SRC_DIR}/Interrupts.s)
+target_compile_options(interrupts PRIVATE "${ASM_COMPILE_FLAGS}")
+
 # Generate a STATIC object file kernel.o
 add_library(kernel OBJECT ${SRC_DIR}/kernel.cpp)
 
 # Other libraries
 add_library(gdt OBJECT ${SRC_DIR}/GlobalDescTable.cpp)
 add_library(port OBJECT ${SRC_DIR}/Port.cpp)
-add_library(interrupt OBJECT ${SRC_DIR}/Interrupts.cpp)
+add_library(interrupt_manager OBJECT ${SRC_DIR}/InterruptManager.cpp)
 
 # Set a different linker - append appropriate flags to exe linker
 set(CMAKE_EXE_LINKER_FLAGS 
@@ -43,7 +46,8 @@ add_executable(kernel.bin
     $<TARGET_OBJECTS:kernel>
     $<TARGET_OBJECTS:gdt>
     $<TARGET_OBJECTS:port>
-    $<TARGET_OBJECTS:interrupt>)
+    $<TARGET_OBJECTS:interrupt_manager>
+    $<TARGET_OBJECTS:interrupts>)
     
 # Make ISO file directory tree
 SET(GRUB_DIRECTORY "${CMAKE_SOURCE_DIR}/iso/boot/grub") 
