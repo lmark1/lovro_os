@@ -86,7 +86,7 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_p)
 	idt_p.base = (uint32_t)interruptDescriptorTable;
 
 	// Load interrupt descriptor table into memory
-	__asm__ volatile("lidt %0"
+	__asm__ __volatile__("lidt %0"
 			:
 			: "m" (idt_p));
 
@@ -127,5 +127,5 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 void InterruptManager::Activate()
 {
 	// sti - start interrupts
-	__asm__ volatile("sti");
+	__asm__ __volatile__("sti");
 }

@@ -53,7 +53,8 @@ int_bottom:
     pushl %esp
     push (interruptNumber)
     call _ZN16InterruptManager15handleInterruptEhj
-    # Replaced esp and eax
+
+    # Restore the stack pointer
     addl %esp, 6
     movl %esp, %eax
 

@@ -28,8 +28,8 @@ GlobalDescriptorTable::GlobalDescriptorTable()
 	gdt_pointer[0] = sizeof(GlobalDescriptorTable) << 16;
 
 	// Execute lgdt assembly instruction
-	// Volatile - must execute where we put it
-	__asm__ volatile("lgdt (%0)"
+	// __volatile__ - must execute where we put it
+	__asm__ __volatile__("lgdt (%0)"
 			: 											// Output
 			: "p" ( ((uint8_t *)gdt_pointer) + 2 )		// Input
 			  );
