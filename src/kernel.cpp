@@ -90,12 +90,12 @@ extern "C" void callConstructors()
 extern "C" void kernelMain(void* multiboot_structure, unsigned int magic_number)
 {
 	printf("Hello world!\n");
-	printf("Hello world - new line");
+	printf("Hello world - new line\n");
 
 	// Instantiate gdt
 	GlobalDescriptorTable gdt;
 	InterruptManager iManager(&gdt);
-	iManager.Activate();
 
+	iManager.Activate();
 	while(1);
 }

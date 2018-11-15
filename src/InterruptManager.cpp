@@ -12,7 +12,13 @@ void printf(char *str);
 uint32_t InterruptManager::handleInterrupt(
 		uint8_t interrupt_id, uint32_t esp)
 {
-	printf("Interrupt");
+	char* foo = "INTERRUPT 0x00\n";
+    char* hex = "0123456789ABCDEF";
+
+    foo[12] = hex[(interrupt_id >> 4) & 0xF];
+    foo[13] = hex[interrupt_id & 0xF];
+    printf(foo);
+
 	return esp;
 }
 
@@ -25,7 +31,7 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_p)
 	  picSlaveCommand(0xA0),
 	  picSlaveData(0xA1)
 {
-	uint32_t codeSegmentOffset = gdt_p->getCodeSegmentSelectorOff();
+	uint16_t codeSegmentOffset = gdt_p->getCodeSegmentSelectorOff();
 	const uint8_t IDT_INTERRUPT_GATE = 0xE;
 
 	for (uint16_t i = 0; i < 256; i++)
@@ -49,12 +55,11 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_p)
 				IDT_INTERRUPT_GATE);
 	// Keyboard interrupt entry
 	SetInterruptDescriptorTableEntry(
-					0x21,
-					codeSegmentOffset,
-					&HandleInterruptRequest0x01,
-					0,
-					IDT_INTERRUPT_GATE);
-
+				0x21,
+				codeSegmentOffset,
+				&HandleInterruptRequest0x01,
+				0,
+				IDT_INTERRUPT_GATE);
 
 	/**
 	 * PIC ICW (Initialization Command Word) - configured in order
@@ -74,14 +79,21 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_p)
 	picMasterData.Write(0x00);
 	picSlaveData.Write(0x00);
 
+	printf("InterruptManager() - PIC Master / Slave initialized.\n");
+
 	InterruptDescriptorTablePointer idt_p;
 	idt_p.size = 256 * sizeof(GateDescriptor) - 1;
 	idt_p.base = (uint32_t)interruptDescriptorTable;
 
 	// Load interrupt descriptor table into memory
-	asm volatile("lidt %0"
+	__asm__ volatile("lidt %0"
 			:
 			: "m" (idt_p));
+
+	printf("Load interrupt descriptor table, waiting...\n");
+	int i = -10000000;
+	while(i < 20000000)
+		i++;
 }
 
 InterruptManager::~InterruptManager()
@@ -115,5 +127,5 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 void InterruptManager::Activate()
 {
 	// sti - start interrupts
-	asm("sti");
+	__asm__ volatile("sti");
 }

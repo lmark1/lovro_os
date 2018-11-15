@@ -29,7 +29,7 @@ GlobalDescriptorTable::GlobalDescriptorTable()
 
 	// Execute lgdt assembly instruction
 	// Volatile - must execute where we put it
-	asm volatile("lgdt (%0)"
+	__asm__ volatile("lgdt (%0)"
 			: 											// Output
 			: "p" ( ((uint8_t *)gdt_pointer) + 2 )		// Input
 			  );

@@ -6,7 +6,7 @@
 # InterruptManager::handleInterrupt method will be defined externally
 .extern _ZN16InterruptManager15handleInterruptEhj
 
-# Extern global function: InterruptManager::IgnoreInterruptRequest
+# Global function: InterruptManager::IgnoreInterruptRequest
 .global _ZN16InterruptManager22IgnoreInterruptRequestEv
 
 
@@ -53,7 +53,9 @@ int_bottom:
     pushl %esp
     push (interruptNumber)
     call _ZN16InterruptManager15handleInterruptEhj
-    movl %eax, %esp
+    # Replaced esp and eax
+    addl %esp, 6
+    movl %esp, %eax
 
     # Pop all segment registers to stack
     popl %gs
@@ -63,7 +65,6 @@ int_bottom:
     popa
 
 _ZN16InterruptManager22IgnoreInterruptRequestEv:
-
     iret
 
 

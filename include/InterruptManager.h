@@ -56,7 +56,7 @@ protected:
 	 * @descriptorPrivilegeLevel 				- 0-3 level
 	 * @descriptorType
 	 */
-	static void SetInterruptDescriptorTableEntry(
+static void SetInterruptDescriptorTableEntry(
 			uint8_t interruptId,
 			uint16_t codeSegmentSelectorOffset,
 			void (*handler)(),
