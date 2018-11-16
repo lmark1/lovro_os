@@ -7,23 +7,45 @@
 
 #include "../include/InterruptManager.h"
 
+/**
+ * Forward declaration of printf function.
+ */
 void printf(char *str);
+
+/**
+ * Declare static object interruptDescriptor table.
+ */
+InterruptManager::GateDescriptor
+	InterruptManager::interruptDescriptorTable[256];
+
+InterruptManager* InterruptManager::ActiveInterruptManager = 0;
 
 uint32_t InterruptManager::handleInterrupt(
 		uint8_t interrupt_id, uint32_t esp)
 {
-	char* foo = "INTERRUPT 0x00\n";
-    char* hex = "0123456789ABCDEF";
-
-    foo[12] = hex[(interrupt_id >> 4) & 0xF];
-    foo[13] = hex[interrupt_id & 0xF];
-    printf(foo);
+	// Try calling the non-static version of this static method
+	if (ActiveInterruptManager != 0)
+	{
+		return ActiveInterruptManager->doHandleInterrupt(
+				interrupt_id,
+				esp);
+	}
 
 	return esp;
 }
 
-InterruptManager::GateDescriptor
-	InterruptManager::interruptDescriptorTable[256];
+uint32_t InterruptManager::doHandleInterrupt(
+		uint8_t interrupt_id, uint32_t esp)
+{
+	char* foo = "INTERRUPT 0x00\n";
+	char* hex = "0123456789ABCDEF";
+
+	foo[12] = hex[(interrupt_id >> 4) & 0xF];
+	foo[13] = hex[interrupt_id & 0xF];
+	printf(foo);
+
+	return esp;
+}
 
 InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_p)
 	: picMasterCommand(0x20),
@@ -90,10 +112,7 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt_p)
 			:
 			: "m" (idt_p));
 
-	printf("Load interrupt descriptor table, waiting...\n");
-	int i = -10000000;
-	while(i < 20000000)
-		i++;
+	printf("Loaded interrupt descriptor table\n");
 }
 
 InterruptManager::~InterruptManager()
@@ -126,6 +145,28 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 
 void InterruptManager::Activate()
 {
+	// If the active interrupt manager has been already set...
+	if(ActiveInterruptManager != 0)
+	{
+		// ... deactivate the old one...
+		ActiveInterruptManager->Deactivate();
+	}
+
+	// ... and set the new one as active
+	ActiveInterruptManager = this;
+
 	// sti - start interrupts
 	__asm__ __volatile__("sti");
+}
+
+void InterruptManager::Deactivate()
+{
+	// If we are calling this method on an active interrupt manager...
+	if (ActiveInterruptManager == this)
+	{
+		//... deactivate it
+		ActiveInterruptManager = 0;
+		__asm__ __volatile__("cli");
+	}
+	// Otherwise it's already inactive
 }

@@ -20,6 +20,11 @@ class InterruptManager
 protected:
 
 	/**
+	 * Currently active isntance of the InterruptManager class.
+	 */
+	static InterruptManager* ActiveInterruptManager;
+
+	/**
 	 * Single entry for the interrupt descriptor table.
 	 */
 	struct GateDescriptor
@@ -85,7 +90,7 @@ public:
 	 * @interrupt_id - ID of the currently handled interrupt
 	 * @esp - Current stack pointer address
 	 *
-	 * @return - TODO
+	 * @return - return the stack pointer address
 	 */
 	static uint32_t handleInterrupt(uint8_t interrupt_id, uint32_t esp);
 
@@ -108,7 +113,20 @@ public:
 	 */
 	static void IgnoreInterruptRequest();
 
+	/**
+	 * Non-static version of handleInterrupt method.
+	 */
+	uint32_t doHandleInterrupt(uint8_t interrupt_id, uint32_t esp);
+
+	/**
+	 * Start recieving interrupts.
+	 */
 	void Activate();
+
+	/**
+	 * Stop recieving interrupts.
+	 */
+	void Deactivate();
 };
 
 
